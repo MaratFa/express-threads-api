@@ -110,17 +110,18 @@ const UserController = {
       filePath = req.file.path;
     }
 
+    // Проверка, что пользователь обновляет свою информацию
     if (id !== req.user.userId) {
       return res.status(403).json({ error: "Нет доступа" });
     }
 
     try {
       if (email) {
-        const existingEmail = await prisma.user.findFirst({
+        const existingUser = await prisma.user.findFirst({
           where: { email: email },
         });
 
-        if (existingUser && existingUser.id !== id) {
+        if (existingUser && existingUser.id !== parseInt(id)) {
           return res.status(400).json({ error: "Почта уже используется" });
         }
       }
@@ -144,7 +145,39 @@ const UserController = {
     }
   },
   current: async (req, res) => {
-    res.send("current");
+    try {
+      const user = await prisma.user.findUnique({
+        where: {
+          id: req.userId,
+        },
+        include: {
+          followers: {
+            include: {
+              follower: true,
+            },
+          },
+          following: {
+            include: {
+              following: true,
+            },
+          },
+        },
+      });
+
+      if (!user) {
+        return res.status(400).json({ error: "Не удалось найти пользователя" });
+      }
+
+      res.json(user);
+    } catch (error) {
+      console.error("Get Current Error", error);
+
+
+
+      
+
+
+    }
   },
 };
 

@@ -148,7 +148,7 @@ const UserController = {
     try {
       const user = await prisma.user.findUnique({
         where: {
-          id: req.userId,
+          id: req.user.userId,
         },
         include: {
           followers: {
@@ -172,12 +172,7 @@ const UserController = {
     } catch (error) {
       console.error("Get Current Error", error);
 
-      res.status(500).json({ error: 'Internal server error'})
-
-
-      
-
-
+      res.status(500).json({ error: "Internal server error" });
     }
   },
 };

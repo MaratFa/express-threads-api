@@ -172,6 +172,7 @@ const UserController = {
     } catch (error) {
       console.error("Get Current Error", error);
 
+      res.status(500).json({ error: 'Internal server error'})
 
 
       

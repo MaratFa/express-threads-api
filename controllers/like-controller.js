@@ -32,9 +32,32 @@ const LikeController = {
     }
   },
   unlikePost: async (req, res) => {
-    res.send("unlikePost");
+    const { id } = req.params;
+    const userId = req.user.userId;
+
+    if (!id) {
+      return res.status(400).json({ error: "Вы уже поставили дизлайк" });
+    }
+
+    try {
+      const existingLike = await prisma.like.findFirst({
+        where: { postId: id, userId },
+      });
+
+      if (!existingLike) {
+        return res.status(400).json({ error: "Нельзя поставить дизлайк" });
+      }
+
+      const like = await prisma.like.deleteMany({
+        where: { postId: id, userId },
+      });
+
+      res.json(like);
+    } catch (error) {
+      console.error("Error unlike post", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   },
 };
 
 module.exports = LikeController;
-

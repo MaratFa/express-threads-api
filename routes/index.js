@@ -40,7 +40,11 @@ router.delete("/posts/:id", authenticateToken, PostController.deletePost);
 
 // Роуты подписки
 router.post("/follow", authenticateToken, FollowController.followUser);
-router.delete("/follow/:id", authenticateToken, FollowController.unfollowUser);
+router.delete(
+  "/unfollow/:id",
+  authenticateToken,
+  FollowController.unfollowUser
+);
 
 // Роуты лайков
 router.post("/likes", authenticateToken, LikeController.likePost);
